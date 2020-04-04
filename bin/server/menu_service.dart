@@ -11,7 +11,22 @@ class MenuService extends MenuServiceBase {
       ..price = 5.99,
     MenuItem()
       ..name = "Sandwich"
-      ..price = 2.99
+      ..price = 2.99,
+    MenuItem()
+      ..name = "Hambuger"
+      ..price = 3.99,
+    MenuItem()
+      ..name = "Chicken Strips"
+      ..price = 2.99,
+    MenuItem()
+      ..name = "Hot Dog"
+      ..price = 1.99,
+    MenuItem()
+      ..name = "Chocolate Chip Cookie"
+      ..price = 0.99,
+    MenuItem()
+      ..name = "Soda"
+      ..price = 0.99
   ];
 
   @override
