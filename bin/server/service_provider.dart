@@ -19,6 +19,6 @@ class ServiceProvider {
 
   Future start() async {
     server.serve(port: serverPort);
-    print('Server listening on port ${server.port}...');
+    print('Server listening on port $serverPort...');
   }
 }
