@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "tech.mattwatkins.mobileorder";
+option java_outer_classname = "MobileOrdering";
+option objc_class_prefix = "MO";
+
+package mobileorder;
+
+import "proto/menu.proto";
+
+service Cart {
+  rpc Add(CartModifyRequest) returns (CartContents) {}
+  rpc Remove(CartModifyRequest) returns (CartContents) {}
+  rpc Submit(CartSubmitRequest) returns (CartContents) {}
+  rpc Get(CartSubmitRequest) returns (CartContents) {}
+}
+
+message CartModifyRequest {
+  string clientId = 1;
+  MenuItem item = 2;
+}
+
+message CartCreateRequest {}
+message CartSubmitRequest { string clientId = 1; }
+message CartSubmitResponse {}
+
+message CartContents {
+  repeated MenuItem items = 1;
+  float total = 2;
+}

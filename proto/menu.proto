@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "tech.mattwatkins.mobileordering";
+option java_outer_classname = "MobileOrdering";
+option objc_class_prefix = "MO";
+
+package mobileorder;
+
+service Menu {
+  rpc Get(MenuRequest) returns (MenuReply) {}
+}
+
+message MenuRequest {}
+
+message MenuReply { repeated MenuItem items = 1; }
+
+message MenuItem {
+  string name = 1;
+  float price = 2;
+}

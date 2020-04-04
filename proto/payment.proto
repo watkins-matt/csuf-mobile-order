@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "tech.mattwatkins.mobileordering";
+option java_outer_classname = "MobileOrdering";
+option objc_class_prefix = "MO";
+
+package mobileorder;
+
+service Payment {
+  rpc Submit(PaymentInfo) returns (PaymentResult) {}
+}
+
+message PaymentInfo {
+  string encryptedCreditCardInfo = 1;
+  float amount = 2;
+}
+
+message PaymentResult { bool success = 1; }
