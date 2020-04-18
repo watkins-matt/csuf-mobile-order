@@ -1,3 +1,5 @@
+![CI](https://github.com/watkins-matt/csuf-mobile-order/workflows/CI/badge.svg)
+
 # Mobile Order
 A simple mobile ordering framework, complete with example mobile app and backend server. 
 
