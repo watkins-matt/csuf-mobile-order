@@ -1,9 +1,7 @@
 analyzer:
   exclude:
     - build/**
-    - lib/generated/**
-    - lib/*pbgrpc**
-    - lib/**pb**
+    - lib/generated/*.dart
   strong-mode:
     implicit-casts: true
     implicit-dynamic: true
@@ -15,7 +13,7 @@ linter:
     - always_declare_return_types
     - always_require_non_null_named_parameters
     #- always_specify_types
-    - annotate_overrides
+    #- annotate_overrides
     - avoid_bool_literals_in_conditional_expressions
     #- avoid_classes_with_only_static_members
     - avoid_empty_else
@@ -69,7 +67,7 @@ linter:
     - prefer_conditional_assignment
     # - prefer_const_declarations
     # - prefer_const_literals_to_create_immutables
-    - prefer_constructors_over_static_methods
+    #- prefer_constructors_over_static_methods
     - prefer_contains
     - prefer_equal_for_default_values
     - prefer_final_fields
