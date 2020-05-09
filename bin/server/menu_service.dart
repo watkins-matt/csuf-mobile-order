@@ -13,7 +13,7 @@ class MenuService extends MenuServiceBase {
       ..name = 'Sandwich'
       ..price = 2.99,
     MenuItem()
-      ..name = 'Hambuger'
+      ..name = 'Hamburger'
       ..price = 3.99,
     MenuItem()
       ..name = 'Chicken Strips'
