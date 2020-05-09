@@ -7,15 +7,14 @@ import 'generated/cart.pbgrpc.dart';
 import 'generated/menu.pb.dart';
 
 class CartPage extends StatefulWidget {
-  static void push(BuildContext context) async {
-    Navigator.push(
+  static Future<void> push(BuildContext context) async {
+    await Navigator.push(
         context,
         MaterialPageRoute(
             builder: (BuildContext context) {
               return CartPage();
             },
-            maintainState: true,
-            settings: RouteSettings(isInitialRoute: true)));
+            maintainState: true));
   }
 
   @override
@@ -23,8 +22,8 @@ class CartPage extends StatefulWidget {
 }
 
 class _CartPageState extends State<CartPage> {
-  List<MenuItem> items = List<MenuItem>();
-  String total = "";
+  List<MenuItem> items = <MenuItem>[];
+  String total = '';
 
   @override
   void initState() {
@@ -32,45 +31,45 @@ class _CartPageState extends State<CartPage> {
     super.initState();
   }
 
-  void updateCart() async {
+  Future<void> updateCart() async {
     var client = Provider.of<ConnectionManager>(context, listen: false);
 
     try {
-      final result = await client.cart.get(CartSubmitRequest()..clientId = "1");
+      final result = await client.cart.get(CartSubmitRequest()..clientId = '1');
       setState(() {
         items = result.items;
 
-        total = "\$" + result.total.toStringAsFixed(2);
-        if (total.endsWith(".0")) {
-          total += "0";
+        total = '\$' + result.total.toStringAsFixed(2);
+        if (total.endsWith('.0')) {
+          total += '0';
         }
       });
     } catch (e) {
-      print("Error: $e");
+      print('Error: $e');
     }
   }
 
-  void cartItemRemoved(int index) async {
+  Future<void> cartItemRemoved(int index) async {
     var client = Provider.of<ConnectionManager>(context, listen: false);
 
     try {
       final result = await client.cart.remove(CartModifyRequest()
-        ..clientId = "1"
+        ..clientId = '1'
         ..item = items[index]);
       setState(() {
         items = result.items;
-        total = "\$" + result.total.toStringAsFixed(2);
-        if (total.endsWith(".0")) {
-          total += "0";
+        total = '\$' + result.total.toStringAsFixed(2);
+        if (total.endsWith('.0')) {
+          total += '0';
         }
       });
     } catch (exception) {
-      print("Error: $exception");
+      print('Error: $exception');
     }
   }
 
   Widget buildCartItem(BuildContext context, int index) {
-    String price = "\$" + items[index].price.toStringAsFixed(2);
+    String price = '\$' + items[index].price.toStringAsFixed(2);
 
     Card listViewCard = Card(
         color: Theme.of(context).cardColor,
@@ -102,12 +101,12 @@ class _CartPageState extends State<CartPage> {
                   child: ListView.builder(
                 itemBuilder: buildCartItem,
                 itemCount: items.length,
-                padding: EdgeInsets.only(right: 8.0, bottom: 8.0, top: 8.0),
+                padding: EdgeInsets.only(right: 8, bottom: 8, top: 8),
               )),
               FlatButton(
                 textTheme: ButtonTextTheme.accent,
-                child: Text("Submit Order"),
                 onPressed: () {},
+                child: Text('Submit Order'),
               )
             ],
           ),

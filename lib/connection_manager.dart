@@ -15,7 +15,7 @@ class ConnectionManager extends ChangeNotifier {
   CartClient cart;
   PaymentClient payment;
 
-  Future connect([String serverIp]) async {
+  Future<void> connect([String serverIp]) async {
     this.serverIp = serverIp;
 
     _channel = ClientChannel(
@@ -28,10 +28,12 @@ class ConnectionManager extends ChangeNotifier {
     cart = CartClient(_channel);
     payment = PaymentClient(_channel);
     connected = true;
+    notifyListeners();
   }
 
   Future disconnect() async {
     await _channel.shutdown();
     connected = false;
+    notifyListeners();
   }
 }

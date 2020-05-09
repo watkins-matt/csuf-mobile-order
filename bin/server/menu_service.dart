@@ -7,25 +7,25 @@ class MenuService extends MenuServiceBase {
   // load menu items from a json file.
   List<MenuItem> items = [
     MenuItem()
-      ..name = "Pizza"
+      ..name = 'Pizza'
       ..price = 5.99,
     MenuItem()
-      ..name = "Sandwich"
+      ..name = 'Sandwich'
       ..price = 2.99,
     MenuItem()
-      ..name = "Hambuger"
+      ..name = 'Hambuger'
       ..price = 3.99,
     MenuItem()
-      ..name = "Chicken Strips"
+      ..name = 'Chicken Strips'
       ..price = 2.99,
     MenuItem()
-      ..name = "Hot Dog"
+      ..name = 'Hot Dog'
       ..price = 1.99,
     MenuItem()
-      ..name = "Chocolate Chip Cookie"
+      ..name = 'Chocolate Chip Cookie'
       ..price = 0.99,
     MenuItem()
-      ..name = "Soda"
+      ..name = 'Soda'
       ..price = 0.99
   ];
 

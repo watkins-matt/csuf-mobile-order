@@ -17,8 +17,8 @@ class ServiceProvider {
     server = Server(availableServices);
   }
 
-  Future start() async {
-    server.serve(port: serverPort);
+  Future<void> start() async {
+    await server.serve(port: serverPort);
     print('Server listening on port $serverPort...');
   }
 }
