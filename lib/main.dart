@@ -1,15 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'connection_manager.dart';
 import 'order_page.dart';
 
-void main() => runApp(MultiProvider(providers: [
-      ChangeNotifierProvider<ConnectionManager>(
-          create: (_) => ConnectionManager()),
-    ], child: App()));
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  App.prefs = await SharedPreferences.getInstance();
+  runApp(MultiProvider(providers: [
+    ChangeNotifierProvider<ConnectionManager>(
+        create: (_) => ConnectionManager()),
+  ], child: App()));
+}
 
 class App extends StatelessWidget {
+  static SharedPreferences prefs;
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
