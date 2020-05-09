@@ -6,9 +6,17 @@ import 'package:mobile_ordering/generated/cart.pbgrpc.dart';
 
 import 'shopping_cart.dart';
 
+enum OrderState {
+  NotStarted,
+  Processing,
+  Complete,
+}
+
 class CartService extends CartServiceBase {
   static SplayTreeMap<String, ShoppingCart> carts =
       SplayTreeMap<String, ShoppingCart>();
+
+  static Map<String, OrderState> state = {};
 
   @override
   Future<CartContents> add(ServiceCall call, CartModifyRequest request) async {
@@ -37,8 +45,18 @@ class CartService extends CartServiceBase {
   @override
   Future<CartContents> submit(
       ServiceCall call, CartSubmitRequest request) async {
-    // TODO: implement submit
-    return null;
+    print('New order submitted for user ${request.clientId}!');
+
+    startProcessingOrder(request.clientId); // ignore: unawaited_futures
+
+    final cart = carts[request.clientId];
+    return cart.toCartContents;
+  }
+
+  Future<void> startProcessingOrder(String clientId) async {
+    state[clientId] = OrderState.Processing;
+    await Future.delayed(const Duration(seconds: 30));
+    state[clientId] = OrderState.Complete;
   }
 
   @override
@@ -49,5 +67,16 @@ class CartService extends CartServiceBase {
 
     final cart = carts[request.clientId];
     return cart.toCartContents;
+  }
+
+  @override
+  Future<OrderStatus> status(
+      ServiceCall call, CartSubmitRequest request) async {
+    if (!state.containsKey(request.clientId)) {
+      state[request.clientId] = OrderState.NotStarted;
+    }
+
+    return OrderStatus()
+      ..ready = state[request.clientId] == OrderState.Complete;
   }
 }
