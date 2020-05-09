@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "tech.mattwatkins.mobileordering";
+option java_outer_classname = "MobileOrdering";
+option objc_class_prefix = "MO";
+
+package mobileorder;
+
+import "proto/cart.proto";
+import "proto/menu.proto";
+
+service Recommendation {
+  rpc GetRecommendation(CartSubmitRequest) returns (MenuReply) {}
+}
