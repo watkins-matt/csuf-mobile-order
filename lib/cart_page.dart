@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_ordering/cart_cache.dart';
 import 'package:provider/provider.dart';
 
 import 'connection_manager.dart';
@@ -51,8 +52,10 @@ class _CartPageState extends State<CartPage> {
 
   Future<void> cartItemRemoved(int index) async {
     var client = Provider.of<ConnectionManager>(context, listen: false);
+    var cart = Provider.of<CartCache>(context, listen: false);
 
     try {
+      cart.remove(items[index]);
       final result = await client.cart.remove(CartModifyRequest()
         ..clientId = '1'
         ..item = items[index]);
