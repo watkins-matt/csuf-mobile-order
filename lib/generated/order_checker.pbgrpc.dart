@@ -10,21 +10,21 @@ import 'dart:async' as $async;
 import 'dart:core' as $core;
 
 import 'package:grpc/service_api.dart' as $grpc;
-import 'cart.pb.dart' as $1;
-import 'order_checker.pb.dart' as $2;
+import 'cart.pb.dart' as $2;
+import 'order_checker.pb.dart' as $3;
 export 'order_checker.pb.dart';
 
 class OrderCheckerClient extends $grpc.Client {
   static final _$orderReady =
-      $grpc.ClientMethod<$1.CartSubmitRequest, $2.OrderStatus>(
+      $grpc.ClientMethod<$2.CartSubmitRequest, $3.OrderStatus>(
           '/mobileorder.OrderChecker/OrderReady',
-          ($1.CartSubmitRequest value) => value.writeToBuffer(),
-          ($core.List<$core.int> value) => $2.OrderStatus.fromBuffer(value));
+          ($2.CartSubmitRequest value) => value.writeToBuffer(),
+          ($core.List<$core.int> value) => $3.OrderStatus.fromBuffer(value));
 
   OrderCheckerClient($grpc.ClientChannel channel, {$grpc.CallOptions options})
       : super(channel, options: options);
 
-  $grpc.ResponseFuture<$2.OrderStatus> orderReady($1.CartSubmitRequest request,
+  $grpc.ResponseFuture<$3.OrderStatus> orderReady($2.CartSubmitRequest request,
       {$grpc.CallOptions options}) {
     final call = $createCall(
         _$orderReady, $async.Stream.fromIterable([request]),
@@ -37,20 +37,20 @@ abstract class OrderCheckerServiceBase extends $grpc.Service {
   $core.String get $name => 'mobileorder.OrderChecker';
 
   OrderCheckerServiceBase() {
-    $addMethod($grpc.ServiceMethod<$1.CartSubmitRequest, $2.OrderStatus>(
+    $addMethod($grpc.ServiceMethod<$2.CartSubmitRequest, $3.OrderStatus>(
         'OrderReady',
         orderReady_Pre,
         false,
         false,
-        ($core.List<$core.int> value) => $1.CartSubmitRequest.fromBuffer(value),
-        ($2.OrderStatus value) => value.writeToBuffer()));
+        ($core.List<$core.int> value) => $2.CartSubmitRequest.fromBuffer(value),
+        ($3.OrderStatus value) => value.writeToBuffer()));
   }
 
-  $async.Future<$2.OrderStatus> orderReady_Pre($grpc.ServiceCall call,
-      $async.Future<$1.CartSubmitRequest> request) async {
+  $async.Future<$3.OrderStatus> orderReady_Pre($grpc.ServiceCall call,
+      $async.Future<$2.CartSubmitRequest> request) async {
     return orderReady(call, await request);
   }
 
-  $async.Future<$2.OrderStatus> orderReady(
-      $grpc.ServiceCall call, $1.CartSubmitRequest request);
+  $async.Future<$3.OrderStatus> orderReady(
+      $grpc.ServiceCall call, $2.CartSubmitRequest request);
 }

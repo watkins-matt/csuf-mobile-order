@@ -9,12 +9,12 @@ import 'dart:core' as $core;
 
 import 'package:protobuf/protobuf.dart' as $pb;
 
-import 'menu.pb.dart' as $0;
+import 'menu.pb.dart' as $1;
 
 class CartModifyRequest extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo('CartModifyRequest', package: const $pb.PackageName('mobileorder'), createEmptyInstance: create)
     ..aOS(1, 'clientId', protoName: 'clientId')
-    ..aOM<$0.MenuItem>(2, 'item', subBuilder: $0.MenuItem.create)
+    ..aOM<$1.MenuItem>(2, 'item', subBuilder: $1.MenuItem.create)
     ..hasRequiredFields = false
   ;
 
@@ -43,15 +43,15 @@ class CartModifyRequest extends $pb.GeneratedMessage {
   void clearClientId() => clearField(1);
 
   @$pb.TagNumber(2)
-  $0.MenuItem get item => $_getN(1);
+  $1.MenuItem get item => $_getN(1);
   @$pb.TagNumber(2)
-  set item($0.MenuItem v) { setField(2, v); }
+  set item($1.MenuItem v) { setField(2, v); }
   @$pb.TagNumber(2)
   $core.bool hasItem() => $_has(1);
   @$pb.TagNumber(2)
   void clearItem() => clearField(2);
   @$pb.TagNumber(2)
-  $0.MenuItem ensureItem() => $_ensure(1);
+  $1.MenuItem ensureItem() => $_ensure(1);
 }
 
 class CartCreateRequest extends $pb.GeneratedMessage {
@@ -129,7 +129,7 @@ class CartSubmitResponse extends $pb.GeneratedMessage {
 
 class CartContents extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo('CartContents', package: const $pb.PackageName('mobileorder'), createEmptyInstance: create)
-    ..pc<$0.MenuItem>(1, 'items', $pb.PbFieldType.PM, subBuilder: $0.MenuItem.create)
+    ..pc<$1.MenuItem>(1, 'items', $pb.PbFieldType.PM, subBuilder: $1.MenuItem.create)
     ..a<$core.double>(2, 'total', $pb.PbFieldType.OF)
     ..hasRequiredFields = false
   ;
@@ -150,7 +150,7 @@ class CartContents extends $pb.GeneratedMessage {
   static CartContents _defaultInstance;
 
   @$pb.TagNumber(1)
-  $core.List<$0.MenuItem> get items => $_getList(0);
+  $core.List<$1.MenuItem> get items => $_getList(0);
 
   @$pb.TagNumber(2)
   $core.double get total => $_getN(1);
@@ -160,5 +160,36 @@ class CartContents extends $pb.GeneratedMessage {
   $core.bool hasTotal() => $_has(1);
   @$pb.TagNumber(2)
   void clearTotal() => clearField(2);
+}
+
+class OrderStatus extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo('OrderStatus', package: const $pb.PackageName('mobileorder'), createEmptyInstance: create)
+    ..aOB(1, 'ready')
+    ..hasRequiredFields = false
+  ;
+
+  OrderStatus._() : super();
+  factory OrderStatus() => create();
+  factory OrderStatus.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory OrderStatus.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  OrderStatus clone() => OrderStatus()..mergeFromMessage(this);
+  OrderStatus copyWith(void Function(OrderStatus) updates) => super.copyWith((message) => updates(message as OrderStatus));
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static OrderStatus create() => OrderStatus._();
+  OrderStatus createEmptyInstance() => create();
+  static $pb.PbList<OrderStatus> createRepeated() => $pb.PbList<OrderStatus>();
+  @$core.pragma('dart2js:noInline')
+  static OrderStatus getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<OrderStatus>(create);
+  static OrderStatus _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.bool get ready => $_getBF(0);
+  @$pb.TagNumber(1)
+  set ready($core.bool v) { $_setBool(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasReady() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearReady() => clearField(1);
 }
 

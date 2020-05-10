@@ -36,3 +36,10 @@ const CartContents$json = const {
   ],
 };
 
+const OrderStatus$json = const {
+  '1': 'OrderStatus',
+  '2': const [
+    const {'1': 'ready', '3': 1, '4': 1, '5': 8, '10': 'ready'},
+  ],
+};
+
