@@ -27,8 +27,8 @@ class _CartPageState extends State<CartPage> {
 
   @override
   void initState() {
-    updateCart();
     super.initState();
+    updateCart();
   }
 
   Future<void> updateCart() async {
@@ -39,7 +39,7 @@ class _CartPageState extends State<CartPage> {
       setState(() {
         items = result.items;
 
-        total = '\$' + result.total.toStringAsFixed(2);
+        total = 'Total: \$' + result.total.toStringAsFixed(2);
         if (total.endsWith('.0')) {
           total += '0';
         }
@@ -58,7 +58,7 @@ class _CartPageState extends State<CartPage> {
         ..item = items[index]);
       setState(() {
         items = result.items;
-        total = '\$' + result.total.toStringAsFixed(2);
+        total = 'Total: \$' + result.total.toStringAsFixed(2);
         if (total.endsWith('.0')) {
           total += '0';
         }
@@ -105,11 +105,18 @@ class _CartPageState extends State<CartPage> {
               )),
               FlatButton(
                 textTheme: ButtonTextTheme.accent,
-                onPressed: () {},
+                onPressed: onSubmitPressed,
                 child: Text('Submit Order'),
               )
             ],
           ),
         ));
+  }
+
+  Future<void> onSubmitPressed() async {
+    var client = Provider.of<ConnectionManager>(context, listen: false);
+    if (client.connected) {
+      await client.cart.submit(CartSubmitRequest()..clientId = '1');
+    }
   }
 }
