@@ -1,9 +1,11 @@
+import 'dart:async';
+
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
+import 'package:mobile_ordering/main.dart';
 import 'package:mobile_ordering/settings_page.dart';
 import 'package:provider/provider.dart';
 
-import 'address_dialog.dart';
 import 'cart_page.dart';
 import 'connection_manager.dart';
 import 'generated/cart.pb.dart';
@@ -20,29 +22,94 @@ class OrderPage extends StatefulWidget {
 }
 
 class _OrderPageState extends State<OrderPage> {
+  final _scaffold = GlobalKey<ScaffoldState>();
   List<MenuItem> items = <MenuItem>[];
+  List<MenuItem> recommendations = <MenuItem>[];
+
   String cartBadge = '';
+  Timer refresh;
+
+  Future<void> onRefresh(Timer t) async {
+    await refreshBadge();
+
+    final client = Provider.of<ConnectionManager>(context, listen: false);
+    if (!client.connected) {
+      final connectionSnack = SnackBar(
+        content: Text('Connecting...'),
+        duration: Duration(seconds: 3),
+      );
+      _scaffold.currentState.showSnackBar(connectionSnack);
+      await _connect();
+    } else {
+      final status =
+          await client.cart.status(CartSubmitRequest()..clientId = '1');
+      if (status.ready) {
+        final connectionSnack = SnackBar(
+          content: Text('Your order is ready. Please come pick up your order.'),
+          duration: Duration(seconds: 3),
+        );
+        _scaffold.currentState.showSnackBar(connectionSnack);
+      }
+    }
+  }
+
+  Future<void> refreshBadge() async {
+    var client = Provider.of<ConnectionManager>(context, listen: false);
+    if (client.connected) {
+      final result = await client.cart.get(CartSubmitRequest()..clientId = '1');
+      setState(() {
+        cartBadge =
+            result.items.isNotEmpty ? result.items.length.toString() : '';
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    refresh = Timer.periodic(Duration(seconds: 15), onRefresh);
+    WidgetsBinding.instance.addPostFrameCallback((_) => onRefresh(refresh));
+  }
 
   Future<void> _connect() async {
-    const String defaultIp = '10.10.10.22';
-    String ipAddress = defaultIp;
-
-    await AddressDialog.show(context);
+    String ip = App.prefs.getString('ip');
 
     var client = Provider.of<ConnectionManager>(context, listen: false);
     // Disconnect from any previous connection
     if (client.connected) {
       await client.disconnect();
     }
-    await client.connect(ipAddress);
 
-    try {
-      final result = await client.menu.get(MenuRequest());
-      items = result.items;
-    } catch (exception) {
-      print('Error: $exception');
+    bool connected = await client.connect(ip);
+
+    if (connected) {
+      final connectionSnack = SnackBar(
+          content: Text('Connected to server.'),
+          duration: Duration(seconds: 3));
+      _scaffold.currentState.showSnackBar(
+        connectionSnack,
+      );
+
+      try {
+        final result = await client.menu.get(MenuRequest());
+        items = result.items;
+
+        final rec = await client.rec
+            .getRecommendation(CartSubmitRequest()..clientId = '1');
+        recommendations = rec.items;
+      } catch (exception) {
+        print('Error: $exception');
+      }
+      setState(() {});
     }
-    setState(() {});
+    // Try to connect again after 15 seconds
+    else {
+      final connectionSnack = SnackBar(
+        content: Text('Unable to connect, retrying in 15 seconds.'),
+        duration: Duration(seconds: 3),
+      );
+      _scaffold.currentState.showSnackBar(connectionSnack);
+    }
   }
 
   Future<void> menuItemAdded(int index) async {
@@ -63,12 +130,20 @@ class _OrderPageState extends State<OrderPage> {
 
   Widget buildMenuItem(BuildContext context, int index) {
     String price = '\$' + items[index].price.toStringAsFixed(2);
+    bool recommended = recommendations.contains(items[index]);
+    Widget subtitle = recommended
+        ? Text(
+            'We recommend this item. ($price)',
+            style: TextStyle(
+                color: Colors.deepOrange, fontWeight: FontWeight.bold),
+          )
+        : Text(price);
 
     Card listViewCard = Card(
         color: Theme.of(context).cardColor,
         child: ListTile(
             title: Text(items[index].name),
-            subtitle: Text(price),
+            subtitle: subtitle,
             trailing: IconButton(
               icon: Icon(
                 Icons.add_circle,
@@ -86,21 +161,38 @@ class _OrderPageState extends State<OrderPage> {
     return Drawer(
         child: Container(
             child: ListView(children: <Widget>[
+      UserAccountsDrawerHeader(
+        accountName: Text('Default User'),
+        accountEmail: Text('user@example.com'),
+      ),
+      ListTile(
+          leading: const Icon(Icons.refresh),
+          title: Text('Reconnect'),
+          onTap: () async {
+            Navigator.pop(context);
+            await _connect();
+          }),
       ListTile(
           leading: const Icon(Icons.settings),
           title: Text('Settings'),
-          onTap: () async => await SettingsPage.push(context))
+          onTap: () async => await SettingsPage.push(context)),
+      ListTile(
+          leading: const Icon(Icons.settings),
+          title: Text('Reset Badge'),
+          onTap: () async => await refreshBadge()),
     ])));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffold,
       drawer: _drawer(context),
       appBar: AppBar(
         title: Text(widget.title),
         actions: <Widget>[
           Badge(
+            animationDuration: Duration(microseconds: 0),
             position: BadgePosition.bottomLeft(bottom: 2, left: 2),
             badgeContent: Text(cartBadge),
             showBadge: cartBadge.isNotEmpty,
@@ -125,11 +217,6 @@ class _OrderPageState extends State<OrderPage> {
             ))
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _connect,
-        tooltip: 'Connect',
-        child: Icon(Icons.cached),
       ),
     );
   }
