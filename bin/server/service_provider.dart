@@ -25,4 +25,8 @@ class ServiceProvider {
     await server.serve(port: serverPort);
     print('Server listening on port $serverPort...');
   }
+
+  Future<void> stop() async {
+    await server.shutdown();
+  }
 }
