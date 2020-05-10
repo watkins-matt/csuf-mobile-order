@@ -1,7 +1,7 @@
 analyzer:
   exclude:
-    - build/**
-    - lib/generated/*.dart
+    - 'build/**'
+    - 'lib/generated/*.dart'
   strong-mode:
     implicit-casts: true
     implicit-dynamic: true
