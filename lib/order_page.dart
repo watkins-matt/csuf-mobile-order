@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
+import 'package:mobile_ordering/cart_cache.dart';
 import 'package:mobile_ordering/main.dart';
 import 'package:mobile_ordering/settings_page.dart';
 import 'package:provider/provider.dart';
@@ -25,13 +26,9 @@ class _OrderPageState extends State<OrderPage> {
   final _scaffold = GlobalKey<ScaffoldState>();
   List<MenuItem> items = <MenuItem>[];
   List<MenuItem> recommendations = <MenuItem>[];
-
-  String cartBadge = '';
   Timer refresh;
 
   Future<void> onRefresh(Timer t) async {
-    await refreshBadge();
-
     final client = Provider.of<ConnectionManager>(context, listen: false);
     if (!client.connected) {
       final connectionSnack = SnackBar(
@@ -50,17 +47,6 @@ class _OrderPageState extends State<OrderPage> {
         );
         _scaffold.currentState.showSnackBar(connectionSnack);
       }
-    }
-  }
-
-  Future<void> refreshBadge() async {
-    var client = Provider.of<ConnectionManager>(context, listen: false);
-    if (client.connected) {
-      final result = await client.cart.get(CartSubmitRequest()..clientId = '1');
-      setState(() {
-        cartBadge =
-            result.items.isNotEmpty ? result.items.length.toString() : '';
-      });
     }
   }
 
@@ -114,15 +100,13 @@ class _OrderPageState extends State<OrderPage> {
 
   Future<void> menuItemAdded(int index) async {
     var client = Provider.of<ConnectionManager>(context, listen: false);
+    var cart = Provider.of<CartCache>(context, listen: false);
+
     try {
-      final result = await client.cart.add(CartModifyRequest()
+      cart.add(items[index]);
+      await client.cart.add(CartModifyRequest()
         ..clientId = '1'
         ..item = items[index]);
-
-      setState(() {
-        cartBadge =
-            result.items.isNotEmpty ? result.items.length.toString() : '';
-      });
     } catch (exception) {
       print('Error: $exception');
     }
@@ -176,10 +160,6 @@ class _OrderPageState extends State<OrderPage> {
           leading: const Icon(Icons.settings),
           title: Text('Settings'),
           onTap: () async => await SettingsPage.push(context)),
-      ListTile(
-          leading: const Icon(Icons.settings),
-          title: Text('Reset Badge'),
-          onTap: () async => await refreshBadge()),
     ])));
   }
 
@@ -191,18 +171,20 @@ class _OrderPageState extends State<OrderPage> {
       appBar: AppBar(
         title: Text(widget.title),
         actions: <Widget>[
-          Badge(
-            animationDuration: Duration(microseconds: 0),
-            position: BadgePosition.bottomLeft(bottom: 2, left: 2),
-            badgeContent: Text(cartBadge),
-            showBadge: cartBadge.isNotEmpty,
-            child: IconButton(
-              icon: Icon(Icons.shopping_basket),
-              onPressed: () {
-                CartPage.push(context);
-              },
-            ),
-          )
+          Consumer<CartCache>(builder: (context, cart, child) {
+            return Badge(
+              animationDuration: Duration(microseconds: 0),
+              position: BadgePosition.bottomLeft(bottom: 2, left: 2),
+              badgeContent: Text(cart.badgeText),
+              showBadge: cart.badgeText.isNotEmpty,
+              child: IconButton(
+                icon: Icon(Icons.shopping_basket),
+                onPressed: () {
+                  CartPage.push(context);
+                },
+              ),
+            );
+          }),
         ],
       ),
       body: Center(

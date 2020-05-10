@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_ordering/cart_cache.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -11,6 +12,7 @@ Future<void> main() async {
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider<ConnectionManager>(
         create: (_) => ConnectionManager()),
+    ChangeNotifierProvider<CartCache>(create: (_) => CartCache())
   ], child: App()));
 }
 
