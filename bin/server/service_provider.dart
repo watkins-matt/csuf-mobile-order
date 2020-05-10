@@ -1,15 +1,19 @@
 import 'package:grpc/grpc.dart';
 
+import 'availability_service.dart';
 import 'cart_service.dart';
 import 'menu_service.dart';
 import 'payment_service.dart';
+import 'recommendation_service.dart';
 
 class ServiceProvider {
   Server server;
   List<Service> availableServices = [
+    AvailabilityService(),
     MenuService(),
     CartService(),
-    PaymentService()
+    PaymentService(),
+    RecommendationService()
   ];
   final int serverPort = 50051;
 
